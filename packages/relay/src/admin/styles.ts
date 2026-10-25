@@ -1,18 +1,18 @@
 // Shared server-rendered UI; no external fonts, scripts, or styles are required.
 export const styles = `
 :root {
-  color-scheme: light;
-  --paper: #faf8f4;
-  --surface: #fff;
-  --ink: #292925;
-  --muted: #6b6a63;
-  --line: #e6e3dc;
-  --coral: #c44735;
-  --coral-soft: #fbede7;
-  --green: #34634e;
-  --green-soft: #eaf2ec;
-  --amber: #805c24;
-  --amber-soft: #faf0d9;
+  color-scheme: dark;
+  --paper: #0b0f17;
+  --surface: #131a2a;
+  --ink: #e6ebf5;
+  --muted: #8b96ad;
+  --line: #1f2940;
+  --coral: #f0654a;
+  --coral-soft: rgba(240, 101, 74, 0.13);
+  --green: #3ecf8e;
+  --green-soft: rgba(62, 207, 142, 0.12);
+  --amber: #f5b04d;
+  --amber-soft: rgba(245, 176, 77, 0.12);
   --radius: 16px;
   --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
 }
@@ -30,6 +30,8 @@ body {
     15px/1.6 -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
+    "PingFang SC",
+    "Microsoft YaHei",
     sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -121,7 +123,7 @@ button,
 }
 button:hover,
 .button:hover {
-  background: #a93727;
+  background: #ff7a5e;
 }
 button.secondary,
 .button.secondary {
@@ -135,8 +137,8 @@ button.secondary:hover,
 }
 button.danger {
   background: transparent;
-  border-color: #ebd6cf;
-  color: #a63b2c;
+  border-color: rgba(240,101,74,0.35);
+  color: #ff9a85;
 }
 button.danger:hover {
   background: var(--coral-soft);
@@ -149,7 +151,7 @@ button.quiet,
 }
 button.quiet:hover,
 .button.quiet:hover {
-  background: #eeece6;
+  background: #0f1522;
   color: var(--ink);
 }
 form {
@@ -266,7 +268,7 @@ form {
   font-weight: 550;
 }
 .sidebar nav a:hover {
-  background: #eeece6;
+  background: #0f1522;
   color: var(--ink);
 }
 .nav-count {
@@ -329,7 +331,7 @@ main {
 }
 .metric.attention {
   background: var(--coral-soft);
-  border-color: #edd0c4;
+  border-color: rgba(240,101,74,0.32);
 }
 .metric.attention .metric-value {
   color: var(--coral);
@@ -342,7 +344,7 @@ main {
   padding: 18px 22px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #f1efe9;
+  background: #0f1522;
 }
 .endpoint label {
   font-size: 12px;
@@ -418,7 +420,7 @@ main {
 .card-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--line);
-  background: #fdfcf9;
+  background: #131a2a;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -434,7 +436,7 @@ main {
   gap: 6px;
   padding: 3px 9px;
   border-radius: 5px;
-  background: #f0eee8;
+  background: #0f1522;
   color: var(--muted);
   font-size: 11px;
   font-weight: 600;
@@ -454,7 +456,7 @@ main {
 }
 .badge.danger {
   background: var(--coral-soft);
-  color: #a63b2c;
+  color: #ff9a85;
 }
 .connection-dot {
   width: 6px;
@@ -550,10 +552,10 @@ main {
 .notice {
   padding: 16px 18px;
   background: var(--coral-soft);
-  border: 1px solid #efd5ca;
+  border: 1px solid rgba(240,101,74,0.32);
   border-radius: 10px;
   font-size: 13px;
-  color: #794739;
+  color: #ffb3a0;
 }
 .notice p {
   margin-top: 7px;
@@ -562,18 +564,18 @@ main {
   font-weight: 650;
 }
 .notice.error {
-  color: #943b2b;
+  color: #ff9a85;
 }
 .notice.success {
   background: var(--green-soft);
-  border-color: #cfded4;
+  border-color: rgba(62,207,142,0.35);
   color: var(--green);
 }
 .empty {
-  border: 1px dashed #d9d6ce;
+  border: 1px dashed #2a3550;
   border-radius: var(--radius);
   padding: 30px 24px;
-  background: #fdfcf9;
+  background: #131a2a;
 }
 .empty h3 {
   font-size: 15px;
@@ -672,7 +674,7 @@ main {
   border: 1px solid var(--line);
   border-radius: 20px;
   padding: 34px;
-  box-shadow: 0 12px 40px #40312106;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
   min-width: 0;
 }
 .focus-card h2 {
@@ -703,7 +705,7 @@ main {
 .field input {
   width: 100%;
   min-height: 48px;
-  border: 1px solid #cbc8bf;
+  border: 1px solid #2a3550;
   border-radius: 8px;
   padding: 11px 13px;
   background: var(--surface);
@@ -841,7 +843,7 @@ main {
     flex-wrap: wrap;
   }
   .sidebar nav a {
-    background: #eeece6;
+    background: #0f1522;
     flex: 1;
     justify-content: center;
   }
