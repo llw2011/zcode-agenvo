@@ -8,6 +8,8 @@
 
 <p align="center"><a href="README.zh-CN.md">简体中文</a></p>
 
+Fork of [Xuanwo/agenvo](https://github.com/Xuanwo/agenvo) (Apache-2.0) adding the ZCode connector, a dark relay admin theme and headless credential issuing.
+
 Ask ChatGPT on your phone to check on Codex running on your server, or have an agent in Herdr on your laptop fix a failing test. Agenvo connects your assistant to [Herdr](https://herdr.dev) and [Codex app-server](https://developers.openai.com/codex/app-server/) through MCP, using a relay you host on Cloudflare or a single VPS. You describe the goal; your assistant decides how to move the work forward.
 
 Experimental [Amp support](docs/amp.md) connects native Amp hosts through a local plugin. An experimental [ZCode Connector](docs/zcode.md) attaches the local ZCode CLI's app-server the same way.
