@@ -245,6 +245,48 @@ export class VpsOAuth implements OAuthServerProvider {
       target.searchParams.set("state", details.params.state);
     return { redirectTo: target.href };
   }
+  /**
+   * Owner-issued credentials for headless agents: registers a loopback client,
+   * approves it directly (the admin session is the consent) and exchanges for
+   * tokens in one step. Refresh rotation semantics match the browser flow.
+   */
+  async issueOwnerToken(name: string): Promise<{
+    clientId: string;
+    tokens: OAuthTokens;
+  }> {
+    this.cleanup();
+    const client = await this.clientsStore.registerClient({
+      client_name: name,
+      redirect_uris: ["http://127.0.0.1/loopback"],
+      grant_types: ["authorization_code", "refresh_token"],
+      response_types: ["code"],
+      token_endpoint_auth_method: "none",
+    });
+    const verifier = randomBytes(32).toString("base64url");
+    const challenge = createHash("sha256")
+      .update(verifier)
+      .digest("base64url");
+    const authorize = new URL(new RelayAddress(this.baseUrl).url("/authorize"));
+    authorize.searchParams.set("response_type", "code");
+    authorize.searchParams.set("client_id", client.client_id);
+    authorize.searchParams.set("redirect_uri", "http://127.0.0.1/loopback");
+    authorize.searchParams.set("code_challenge", challenge);
+    authorize.searchParams.set("code_challenge_method", "S256");
+    const { redirectTo } = this.approve(
+      authorize.href,
+      client.client_id,
+      "http://127.0.0.1/loopback",
+    );
+    const code = new URL(redirectTo).searchParams.get("code")!;
+    const tokens = await this.exchangeAuthorizationCode(
+      client,
+      code,
+      verifier,
+      "http://127.0.0.1/loopback",
+    );
+    return { clientId: client.client_id, tokens };
+  }
+
   private code(client: OAuthClientInformationFull, value: string) {
     const code = this.store.get<Code>("oauth:code:" + hash(value));
     if (

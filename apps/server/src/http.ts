@@ -12,7 +12,8 @@ import {
   type OwnerAuth,
 } from "@agenvo/relay/admin/auth";
 import { managementPage } from "@agenvo/relay/admin/management";
-import { browserError } from "@agenvo/relay/admin/page";
+import { browserError, html, escapeHtml as e } from "@agenvo/relay/admin/page";
+import { language } from "@agenvo/relay/admin/language";
 import type { Relay } from "@agenvo/relay/core";
 import { LIMITS, PROTOCOL, VERSION, Fault, asOutcome } from "@agenvo/protocol";
 import { serverConfig } from "./config.js";
@@ -73,6 +74,48 @@ export function createApp(
           status: 303,
           headers: { Location: address.path("/admin") },
         });
+      else if (path === "/admin/tokens" && request.method === "POST") {
+        if (!(await owner.authenticated(request)))
+          throw new Fault("permission_denied");
+        sameOrigin(request, { BASE_URL: config.baseUrl });
+        const data = Object.fromEntries(await request.formData());
+        const name = z
+          .string()
+          .trim()
+          .min(1)
+          .max(64)
+          .regex(/^[\w.\-一-龥]+$/)
+          .parse(data.name);
+        const issued = await oauth.issueOwnerToken(name);
+        const a = address;
+        const row = (label: string, value: string, mono = true) =>
+          `<div class="data-row"><dt>${e(label)}</dt><dd><code>${e(value)}</code></dd></div>`;
+        response = html(
+          language(request),
+          `Token · ${name}`,
+          `<section class="focus-card result-card">
+            <p class="eyebrow">客户端凭据已发放 / Credentials issued</p>
+            <h1>${e(name)}</h1>
+            <div class="notice" role="status">请立即复制保存。Access Token 15 分钟内有效；Refresh Token 一次性轮换，每次刷新返回新值，重放旧值会撤销整个授权。</div>
+            <dl class="data">
+              ${row("Endpoint", config.baseUrl + "/mcp")}
+              ${row("client_id", issued.clientId)}
+              ${row("access_token", issued.tokens.access_token)}
+              ${row("expires_in", String(issued.tokens.expires_in) + "s")}
+              ${row("refresh_token", issued.tokens.refresh_token!)}
+            </dl>
+            <pre class="fingerprint">POST ${e(a.url("/token"))}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&amp;client_id=${e(issued.clientId)}&amp;refresh_token=&lt;当前值&gt;</pre>
+            <div class="actions">
+              <a class="button secondary" href="${e(a.path("/admin"))}#clients">返回控制台 / Back</a>
+            </div>
+          </section>`,
+          new Headers(),
+          { prefix: address.prefix, layout: "focus" },
+        );
+      }
       else if (
         path === "/authorize" ||
         path === "/admin" ||
@@ -87,7 +130,21 @@ export function createApp(
           response =
             path === "/authorize"
               ? await oauth.consent(request)
-              : await managementPage(request, relay, config.baseUrl);
+              : await managementPage(
+                  request,
+                  relay,
+                  config.baseUrl,
+                  undefined,
+                  `<div class="card issue-card">
+                    <div class="card-title"><h3>发放客户端凭据 / Issue headless credentials</h3></div>
+                    <p class="muted">为无浏览器的 Agent 直接签发 Bearer 凭据（OAuth 标准客户端仍走浏览器授权）。签发后出现在下方列表，可随时撤销。</p>
+                    <form method="post" action="${e(address.path("/admin/tokens"))}" class="issue-form">
+                      <label for="issue-name">Agent 名称</label>
+                      <input id="issue-name" name="name" required maxlength="64" pattern="[A-Za-z0-9_.\-一-龥]+" placeholder="web-agent" spellcheck="false">
+                      <button class="primary">发放 / Issue</button>
+                    </form>
+                  </div>`,
+                );
         }
       } else if (path === "/health" && req.method === "GET")
         response = Response.json({

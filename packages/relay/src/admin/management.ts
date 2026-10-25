@@ -112,6 +112,7 @@ export async function managementPage(
   relay: AdminRelay,
   baseUrl: string,
   revokeOAuth?: (id: string) => Promise<void>,
+  issueForm?: string,
 ) {
   const locale = language(request);
   const text = messages(locale);
@@ -223,6 +224,7 @@ export async function managementPage(
     </section>
     <section class="section" id="clients" aria-labelledby="clients-heading"><div class="section-heading"><div><p class="section-number">03</p><h2 id="clients-heading">${text.grants}</h2><p>${text.clientHelp}</p></div>${badge(String(active.length))}</div>
       ${noticeKey === "client-revoked" ? `<div class="notice success flash" role="status">${notice}</div>` : ""}
+      ${issueForm ?? ""}
       ${active.length ? grantsCard(active, locale, now, address) : empty(text.noClients, text.noClientsHelp, { href: guide(locale), label: text.connectClient })}
       ${inactive.length ? `<details class="history"><summary>${text.history} (${inactive.length})</summary>${grantsCard(inactive, locale, now, address)}</details>` : ""}
     </section>${scopeWarning(locale)}

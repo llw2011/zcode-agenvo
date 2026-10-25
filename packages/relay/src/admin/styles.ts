@@ -777,6 +777,27 @@ main {
 .flash {
   margin-bottom: 24px;
 }
+.issue-card .issue-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.issue-card .issue-form label {
+  color: var(--muted);
+  font-size: 13px;
+}
+.issue-card .issue-form input {
+  flex: 1;
+  min-width: 200px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+}
 .grant-row {
   padding: 22px 24px;
   display: flex;
